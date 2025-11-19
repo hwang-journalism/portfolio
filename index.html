@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hwang Chi Woong | Journalist Portfolio</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+        h1, h2, h3, h4, .serif {
+            font-family: 'Noto Serif KR', serif;
+        }
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .article-card:hover .article-title {
+            color: #2563eb;
+        }
+        .nav-link.active {
+            color: #1a1a1a;
+            border-bottom: 2px solid #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        
+        // Icons
+        const Icon = ({ name, size = 20, className = "" }) => {
+            const icons = {
+                mail: (
+                    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                ),
+                link: (
+                    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                ),
+                arrowRight: (
+                    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                ),
+                quote: (
+                    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg>
+                )
+            };
+            return icons[name] || null;
+        };
+
+        const App = () => {
+            const [activeSection, setActiveSection] = useState('works');
+
+            const profile = {
+                name: "황치웅",
+                engName: "Hwang Chi Woong",
+                role: "Journalist & Media Activist",
+                email: "facti301@gmail.com",
+                bio: "질문하지 않으면 들을 수 없는 목소리가 있습니다. 대학 언론의 위기 속에서 '연대'라는 해법을 찾았고, 기성 언론이 훑고 지나간 자리에서 '진짜 청년'의 목소리를 발굴했습니다.",
+                detailBio: "팩트가 확인될 때까지 파고드는 집요함과, 사각지대를 비추는 따뜻한 시선을 가진 기자입니다."
+            };
+
+            const competencies = [
+                {
+                    title: "Insight",
+                    desc: "소재 발굴 능력",
+                    text: "\"기성 언론에서도 파헤칠 생각을 못한 주제를 묵직하게 밀어붙였다.\"",
+                    source: "시사IN 대학기자상 심사평 中"
+                },
+                {
+                    title: "Leadership",
+                    desc: "위기 돌파력",
+                    text: "대학언론 위기 속에서 '네트워크'를 조직하여 교육과 협업의 장을 구축했습니다.",
+                    source: null
+                },
+                {
+                    title: "Persistence",
+                    desc: "집요한 취재",
+                    text: "원론적인 답변을 거부하고, 수십 명의 인터뷰와 데이터로 팩트를 검증합니다.",
+                    source: null
+                }
+            ];
+
+            const works = [
+                {
+                    category: "Investigative",
+                    year: "2021",
+                    title: "키워드로 총선 읽기: 18세, 청년 정책, 그리고 꼰대 정당",
+                    summary: "만 18세 선거권 확대가 현장에서 겉도는 현실과 각 정당 청년 정책의 부실함을 고발한 기획 보도. 시사IN 대학기자상 수상작.",
+                    tags: ["시사IN 대학기자상", "심층취재", "정치"]
+                },
+                {
+                    category: "Media Strategy",
+                    year: "2020-2022",
+                    title: "대학언론 위기 극복 프로젝트: 무너진 공론장을 다시 세우다",
+                    summary: "편집권 침해와 예산 삭감으로 위축된 대학 기자들을 위해 '공동 취재' 시스템과 뉴스 리터러시 교육 프로그램을 기획 및 운영.",
+                    tags: ["조직운영", "기획력", "협업"]
+                },
+                {
+                    category: "Opinion",
+                    year: "2021",
+                    title: "학생 자치와 대학 민주주의: 감시받지 않는 권력은 부패한다",
+                    summary: "학생 사회의 무관심 속에서도 민주적 절차와 투명성을 강조하며, 기자가 가져야 할 비판적 시각을 견지한 칼럼 시리즈.",
+                    tags: ["비평", "학내정치", "대학사회"]
+                }
+            ];
+
+            const careers = [
+                {
+                    period: "2020 - 2022",
+                    role: "의장 (Chair)",
+                    org: "대학언론인 네트워크",
+                    detail: "전국 대학 언론인 연대체 운영 총괄. 쿠키뉴스 등 기성 언론과 MOU 체결 및 협업 보도 시스템 구축."
+                },
+                {
+                    period: "2021",
+                    role: "취재보도 부문 수상",
+                    org: "시사IN 대학기자상",
+                    detail: "'키워드로 총선 읽기' 기획 보도로 기성 언론이 놓친 청년 유권자 이슈를 심층적으로 다룸."
+                },
+                {
+                    period: "2019 - 2021",
+                    role: "기자 / 통신원",
+                    org: "조대신문 (Chosun Univ. News)",
+                    detail: "학내외 정치, 사회 이슈 취재. 현장 중심의 르포라이팅 지향."
+                },
+                {
+                    period: "2020",
+                    role: "활동가",
+                    org: "대학알리 (UnivAlli)",
+                    detail: "독립 언론 생태계 구축을 위한 취재 및 기고 활동."
+                }
+            ];
+
+            const press = [
+                { title: "\"기성 언론도 못할 일 대학 언론이 해내다\"", outlet: "시사IN", desc: "소재 발굴 능력과 치밀한 취재력 호평" },
+                { title: "\"대학언론의 위기, 이제는 변해야 할 때\"", outlet: "대학알리 / 오마이뉴스", desc: "언론 생태계에 대한 통찰과 비전 인터뷰" },
+            ];
+
+            return (
+                <div className="min-h-screen bg-[#f8f9fa] text-[#1a1a1a] selection:bg-[#1a1a1a] selection:text-white">
+                    {/* Top Navigation */}
+                    <nav className="fixed top-0 w-full bg-[#f8f9fa]/90 backdrop-blur-md z-50 border-b border-gray-200">
+                        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+                            <span className="font-bold text-lg tracking-tight serif">H.C.W.</span>
+                            <div className="flex gap-8 text-sm font-medium text-gray-500">
+                                <button 
+                                    onClick={() => document.getElementById('about').scrollIntoView({behavior: 'smooth'})}
+                                    className="hover:text-black transition-colors">About</button>
+                                <button 
+                                    onClick={() => document.getElementById('works').scrollIntoView({behavior: 'smooth'})}
+                                    className="hover:text-black transition-colors">Works</button>
+                                <button 
+                                    onClick={() => document.getElementById('career').scrollIntoView({behavior: 'smooth'})}
+                                    className="hover:text-black transition-colors">Career</button>
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* Hero Section */}
+                    <header id="about" className="pt-32 pb-20 px-6 max-w-5xl mx-auto">
+                        <div className="fade-in-up">
+                            <p className="text-sm font-bold tracking-widest text-gray-500 mb-4 uppercase">Journalist Portfolio</p>
+                            <h1 className="text-5xl md:text-7xl font-bold mb-4 serif leading-tight text-gray-900">
+                                {profile.name}<span className="text-gray-400 font-light ml-4 hidden md:inline">{profile.engName}</span>
+                            </h1>
+                            <p className="text-xl md:text-2xl text-gray-600 mt-6 leading-relaxed max-w-3xl serif">
+                                {profile.bio}
+                            </p>
+                            <div className="mt-8 flex items-center gap-6">
+                                <a href={`mailto:${profile.email}`} className="flex items-center gap-2 text-gray-900 font-medium border-b border-gray-900 pb-0.5 hover:opacity-70 transition-opacity">
+                                    <Icon name="mail" size={18} /> {profile.email}
+                                </a>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div className="border-t border-gray-200 max-w-5xl mx-auto"></div>
+
+                    {/* Competencies Section (Why Me) */}
+                    <section className="py-20 px-6 max-w-5xl mx-auto bg-white my-10 rounded-sm shadow-sm">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                            {competencies.map((item, i) => (
+                                <div key={i} className="fade-in-up delay-100 space-y-3">
+                                    <div className="w-10 h-1 bg-black mb-4"></div>
+                                    <h3 className="text-2xl font-bold serif">{item.title}</h3>
+                                    <p className="font-bold text-gray-500 text-sm uppercase tracking-wider">{item.desc}</p>
+                                    <p className="text-gray-600 leading-relaxed pt-2">
+                                        {item.text}
+                                    </p>
+                                    {item.source && (
+                                        <p className="text-xs text-gray-400 mt-2">- {item.source}</p>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Featured Works Section */}
+                    <section id="works" className="py-20 px-6 max-w-5xl mx-auto">
+                        <div className="flex items-baseline justify-between mb-12">
+                            <h2 className="text-3xl md:text-4xl font-bold serif">Selected Works</h2>
+                            <span className="text-gray-400 text-sm">Journalism & Projects</span>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 gap-0 border-t border-gray-300">
+                            {works.map((work, index) => (
+                                <article key={index} className="group py-10 border-b border-gray-200 grid grid-cols-1 md:grid-cols-12 gap-6 hover:bg-white transition-colors px-4 -mx-4 rounded-lg">
+                                    <div className="md:col-span-3 text-gray-500 font-mono text-sm pt-1">
+                                        {work.year} <span className="mx-2">/</span> {work.category}
+                                    </div>
+                                    <div className="md:col-span-9">
+                                        <h3 className="text-2xl font-bold mb-3 serif group-hover:text-blue-700 transition-colors cursor-pointer">
+                                            {work.title}
+                                        </h3>
+                                        <p className="text-gray-600 leading-relaxed mb-4">
+                                            {work.summary}
+                                        </p>
+                                        <div className="flex gap-2 flex-wrap">
+                                            {work.tags.map(tag => (
+                                                <span key={tag} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded border border-gray-200">#{tag}</span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* Career & Press Section */}
+                    <section id="career" className="py-20 px-6 max-w-5xl mx-auto bg-[#1a1a1a] text-white rounded-lg mb-20">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+                            
+                            {/* Career */}
+                            <div>
+                                <h2 className="text-3xl font-bold mb-10 serif border-b border-gray-700 pb-4">Experience</h2>
+                                <div className="space-y-10">
+                                    {careers.map((career, index) => (
+                                        <div key={index} className="relative pl-8 border-l border-gray-700">
+                                            <div className="absolute -left-1.5 top-2 w-3 h-3 bg-white rounded-full"></div>
+                                            <span className="text-sm text-gray-400 font-mono block mb-1">{career.period}</span>
+                                            <h4 className="text-xl font-bold mb-1">{career.role}</h4>
+                                            <div className="text-gray-300 mb-2">{career.org}</div>
+                                            <p className="text-sm text-gray-400 leading-relaxed opacity-80">
+                                                {career.detail}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Press */}
+                            <div>
+                                <h2 className="text-3xl font-bold mb-10 serif border-b border-gray-700 pb-4">In the Media</h2>
+                                <div className="space-y-6">
+                                    {press.map((item, index) => (
+                                        <div key={index} className="group p-6 bg-white/5 rounded border border-white/10 hover:bg-white/10 transition-colors cursor-pointer">
+                                            <div className="flex items-start gap-4">
+                                                <Icon name="quote" size={24} className="text-gray-500 mt-1 shrink-0" />
+                                                <div>
+                                                    <h4 className="text-lg font-bold leading-snug mb-2 group-hover:text-blue-300 transition-colors">
+                                                        {item.title}
+                                                    </h4>
+                                                    <div className="text-sm text-gray-400 flex items-center gap-2 mb-2">
+                                                        <span className="font-semibold text-gray-300">{item.outlet}</span>
+                                                        <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
+                                                        <span>Interview</span>
+                                                    </div>
+                                                    <p className="text-sm text-gray-500">
+                                                        {item.desc}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                
+                                <div className="mt-12 p-6 bg-blue-900/20 border border-blue-500/30 rounded">
+                                    <h4 className="font-bold mb-2 text-blue-100">Contact</h4>
+                                    <p className="text-sm text-blue-200/80 mb-4">
+                                        새로운 관점의 기사가 필요하시거나, 인터뷰 요청은 아래로 연락 바랍니다.
+                                    </p>
+                                    <a href={`mailto:${profile.email}`} className="text-white font-medium border-b border-white/30 hover:border-white pb-1 transition-colors">
+                                        {profile.email} &rarr;
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer className="py-10 text-center text-gray-500 text-sm border-t border-gray-200">
+                        <p>&copy; 2025 {profile.engName}. All rights reserved.</p>
+                        <p className="mt-2 opacity-60">Designed with Editorial Style.</p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById("root"));
+        root.render(<App />);
+    </script>
+</body>
+</html>
