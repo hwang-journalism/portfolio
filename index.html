@@ -3,56 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hwang Chi Woong | Journalist Portfolio</title>
+    <title>Hwang Chi Woong | Journalist</title>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #f8f9fa;
-            color: #1a1a1a;
-            line-height: 1.6;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #ffffff;
+            color: #333333;
+            line-height: 1.75;
         }
         h1, h2, h3, h4, .serif {
             font-family: 'Noto Serif KR', serif;
         }
-        .fade-in-up {
-            animation: fadeInUp 0.8s ease-out forwards;
-            opacity: 0;
-            transform: translateY(20px);
+        .sidebar-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
         }
-        .delay-100 { animation-delay: 0.1s; }
-        .delay-200 { animation-delay: 0.2s; }
-        .delay-300 { animation-delay: 0.3s; }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
+        /* Mobile adjustments */
+        @media (max-width: 1024px) {
+            .sidebar-sticky {
+                position: relative;
+                height: auto;
             }
         }
-        .article-card:hover .article-title {
-            color: #2563eb;
+        .nav-item {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
         }
-        .gallery-img {
-            transition: transform 0.3s ease;
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: 0;
+            left: 0;
+            background-color: #000;
+            transition: width 0.3s;
         }
-        .gallery-item:hover .gallery-img {
-            transform: scale(1.05);
+        .nav-item:hover::after {
+            width: 100%;
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         /* Modal Animation */
-        .modal-overlay {
-            animation: fadeIn 0.2s ease-out forwards;
-        }
-        .modal-content {
-            animation: scaleUp 0.3s ease-out forwards;
-        }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-overlay { animation: fadeIn 0.2s ease-out forwards; }
+        .modal-content { animation: scaleUp 0.3s ease-out forwards; }
         @keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
@@ -62,27 +71,13 @@
     <script type="text/babel">
         const { useState } = React;
         
-        // Icons
-        const Icon = ({ name, size = 20, className = "" }) => {
+        const Icon = ({ name, size = 18, className = "" }) => {
             const icons = {
-                mail: (
-                    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                ),
-                external: (
-                     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
-                ),
-                quote: (
-                    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg>
-                ),
-                camera: (
-                    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
-                ),
-                x: (
-                    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                ),
-                users: (
-                    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                )
+                mail: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>,
+                external: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>,
+                x: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>,
+                users: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>,
+                fileText: <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
             };
             return icons[name] || null;
         };
@@ -93,121 +88,236 @@
             const profile = {
                 name: "황치웅",
                 engName: "Hwang Chi Woong",
-                role: "Journalist",
+                // 'Messenger' added as a role
+                roles: ["Journalist", "Media Activist", "Messenger"], 
                 email: "facti301@gmail.com",
-                bio: "대학언론인 네트워크 전 의장. 조대신문 기자 및 통신원으로 활동하며 학내외 이슈를 취재했습니다. 시사IN 대학기자상을 수상했으며, 대학 언론 위기 극복을 위한 연대 활동을 펼쳤습니다.",
-                imageUrl: "481085367_4010786295822895_3813106413135928626_n.jpg" 
+                slogan: "질문하지 않으면 들을 수 없는 목소리를 기록합니다.",
+                imageUrl: "481085367_4010786295822895_3813106413135928626_n.jpg"
             };
 
-            const competencies = [
+            const narratives = [
                 {
-                    title: "Reporting",
-                    desc: "취재 및 보도",
-                    text: "시사IN 대학기자상 수상 (2021). 18세 선거권 이슈와 청년 정책을 다룬 '키워드로 총선 읽기' 기획 보도.",
-                    source: "시사IN"
+                    title: "대학언론의 위기를 연대로 극복하다",
+                    content: "대학 입학 후 마주한 대학 언론의 현실은 위태로웠습니다. 편집권 침해와 예산 삭감으로 기자들은 펜을 꺾어야 했습니다. 이 문제를 해결하기 위해 '대학언론인 네트워크'를 조직하고 의장을 맡았습니다. 흩어져 있던 대학 기자들을 연결하고, 기성 언론(쿠키뉴스 등)과의 협약을 통해 대학생 기자들이 설 자리를 넓혔습니다. 후배들이 맨땅에 헤딩하지 않도록 '대학언론인 아카데미'를 설립해 1만여 명의 수강생에게 실무 교육을 제공했습니다."
                 },
                 {
-                    title: "Organization",
-                    desc: "조직 및 기획",
-                    text: "대학언론인 네트워크 의장(2020-2022)으로서 전국 대학 언론인 연대 및 교육 프로그램 기획. 쿠키뉴스 등 기성 언론과의 협약 체결.",
-                    source: "대학알리"
+                    title: "기성 언론이 놓친 사각지대를 비추다",
+                    content: "기자로서 저의 시선은 늘 사각지대를 향했습니다. 2021년, 만 18세 선거권 확대에도 불구하고 현장에서 겉도는 선거 교육의 현실을 고발한 기획 보도 <키워드로 총선 읽기>는 시사IN 대학기자상 수상으로 이어졌습니다. 단순히 현상을 전달하는 것을 넘어, '왜 청년의 목소리는 정치에 닿지 않는가?'라는 질문을 던지고 데이터를 통해 증명해내는 것. 그것이 제가 추구하는 저널리즘입니다."
                 },
                 {
-                    title: "Columnist",
-                    desc: "기명 칼럼",
-                    text: "매거진닷킴 '황치웅의 메신저' 연재. 청년의 시각으로 바라본 사회 현상과 미디어 비평.",
-                    source: "Magazine.kim"
-                }
-            ];
-
-            const magazineSeries = [
-                {
-                    title: "황치웅의 메신저: 우리가 주목해야 할 대학 언론",
-                    date: "2021",
-                    desc: "기성 언론이 외면한 대학 사회의 이슈를 발굴하고, 청년 기자의 관점에서 재해석한 기명 연재 시리즈.",
-                    link: "https://magazine.kim"
-                },
-                {
-                    title: "청년 정치의 현주소와 메신저의 역할",
-                    date: "2021",
-                    desc: "'청년'이라는 키워드가 소비되는 방식에 대한 비판적 고찰.",
-                    link: "https://magazine.kim"
+                    title: "메신저(Messenger)로서의 확장",
+                    content: "조대신문 기자와 대학알리 활동가를 거쳐, 이제는 더 넓은 세상의 이야기를 전하는 메신저가 되고자 합니다. 매거진닷킴에서 'Messenger'로 불리며 미디어와 사회 현상을 비평했습니다. 앞으로도 누군가의 목소리가 지워지지 않도록, 현장을 지키는 기록자로 남겠습니다."
                 }
             ];
 
             const works = [
                 {
-                    category: "Report",
+                    category: "Investigative",
                     year: "2021",
-                    title: "키워드로 총선 읽기 (시사IN 대학기자상 수상작)",
-                    summary: "만 18세 선거권 확대와 고교 선거 교육의 부재, 정당의 청년 정책을 다룬 기획 보도.",
-                    tags: ["시사IN 대학기자상", "기획보도", "정치"],
+                    title: "키워드로 총선 읽기: 18세, 청년 정책",
+                    subtitle: "시사IN 대학기자상 수상작",
                     url: "https://www.sisain.co.kr/news/articleView.html?idxno=43965"
                 },
-                // 대학언론인 아카데미를 팝업 트리거로 변경
                 {
                     category: "Project",
                     year: "2020-2022",
-                    title: "대학언론인 아카데미 (Click for Details)",
-                    summary: "내부 교육 체계가 부재한 대학 언론의 현실을 타개하기 위해 직접 기획한 저널리즘 교육 프로그램.",
-                    tags: ["교육기획", "인적네트워크", "저널리즘"],
-                    action: () => setIsModalOpen(true) // 클릭 시 모달 오픈
+                    title: "대학언론인 아카데미 & 네트워크",
+                    subtitle: "기자 교육 시스템 기획 및 운영 (Click)",
+                    action: () => setIsModalOpen(true)
                 }
             ];
 
-             const galleryImages = [
-                {
-                    src: "https://www.sisain.co.kr/news/photo/202103/43965_80830_4618.jpg",
-                    caption: "시사IN 대학기자상 수상 (2021)"
-                },
-                {
-                    src: "http://www.univalli.com/news/photo/202110/23614_11790_5453.jpg", 
-                    caption: "대학언론인 네트워크 활동"
-                },
-                {
-                    src: "https://cdn.pixabay.com/photo/2015/01/09/11/09/meeting-594091_1280.jpg",
-                    caption: "현장 취재 및 교육 활동"
-                }
+            // 매거진닷킴 기사 (Messenger)
+            const messengerArticles = [
+                { title: "Messenger: Article 1", url: "https://www.magazine.kim/news/articleView.html?idxno=3046" },
+                { title: "Messenger: Article 2", url: "https://www.magazine.kim/news/articleView.html?idxno=3047" },
+                { title: "Messenger: Article 3", url: "https://www.magazine.kim/news/articleView.html?idxno=3142" },
+                { title: "Messenger: Article 4", url: "https://www.magazine.kim/news/articleView.html?idxno=3280" }
             ];
 
-            const press = [
-                { 
-                    title: "\"기성 언론도 못할 일 대학 언론이 해내다\"", 
-                    outlet: "시사IN", 
-                    desc: "소재 발굴 능력 평가 및 대학기자상 심사평",
-                    url: "https://www.sisain.co.kr/news/articleView.html?idxno=43965"
-                },
-                { 
-                    title: "\"대학언론의 위기, 이제는 변해야 할 때\"", 
-                    outlet: "대학알리 / 오마이뉴스", 
-                    desc: "대학언론인 네트워크 의장 인터뷰",
-                    url: "https://www.univalli.com/news/article.html?no=23614"
-                },
+            const galleryImages = [
+                 { src: "https://www.sisain.co.kr/news/photo/202103/43965_80830_4618.jpg", caption: "시사IN 대학기자상 수상" },
+                 { src: "http://www.univalli.com/news/photo/202110/23614_11790_5453.jpg", caption: "대학언론인 네트워크 활동" },
+                 { src: "https://cdn.pixabay.com/photo/2015/01/09/11/09/meeting-594091_1280.jpg", caption: "현장 취재 및 회의" }
             ];
 
-            // 아카데미 데이터
             const academyData = {
                 title: "대학언론인 아카데미",
                 subtitle: "이론과 실무의 간극을 메우다",
-                reason: "학보사 기자 시절, 기사 작성부터 취재 윤리까지 체계적인 교육 없이 '맨땅에 헤딩'해야 했던 현실이 늘 안타까웠습니다. 후배들에게는 같은 어려움을 물려주지 않기 위해, 현직 전문가들과 대학생 기자를 연결하는 다리를 직접 놓았습니다.",
+                reason: "학보사 기자 시절, 체계적인 교육 없이 '맨땅에 헤딩'해야 했던 현실을 바꾸기 위해 시작했습니다. 현직 전문가들과 대학생 기자를 연결하는 다리를 직접 놓았습니다.",
                 instructors: [
-                    { name: "천관율", role: "얼룩소 에디터 (전 시사IN 기자)" },
-                    { name: "박지현", role: "전 더불어민주당 비상대책위원장 (추적단 불꽃)" },
-                    { name: "황민아", role: "CBS 씨리얼 PD" },
-                    { name: "민수미", role: "쿠키뉴스 기획취재 팀장" },
-                    { name: "김진철", role: "한터 언론아카데미 (전 한겨레 기자)" },
-                    { name: "그 외 다수", role: "현직 기자 및 PD 등 누적 10여 명의 전문가 섭외" }
+                    "천관율 (얼룩소 에디터)", "박지현 (전 민주당 비대위원장)", 
+                    "황민아 (CBS PD)", "민수미 (쿠키뉴스 팀장)", "김진철 (한터 언론아카데미)"
                 ]
             };
 
             return (
-                <div className="min-h-screen bg-[#f8f9fa] text-[#1a1a1a] selection:bg-[#1a1a1a] selection:text-white relative">
+                <div className="flex flex-col lg:flex-row min-h-screen bg-white">
                     
-                    {/* Modal (Popup) */}
+                    {/* Left Sidebar (Sticky) */}
+                    <aside className="lg:w-1/3 xl:w-1/4 bg-[#f9f9f9] border-r border-gray-200 p-8 lg:p-12 sidebar-sticky flex flex-col justify-between">
+                        <div>
+                            {/* Profile Image */}
+                            <div className="w-32 h-32 rounded-full overflow-hidden mb-8 border border-gray-200 bg-gray-200 relative">
+                                {profile.imageUrl ? (
+                                    <img 
+                                        src={profile.imageUrl} 
+                                        alt="Profile" 
+                                        className="w-full h-full object-cover"
+                                        // 얼굴 중심 크롭을 위한 스타일 (상단 20% 지점 기준)
+                                        style={{ objectPosition: "center 20%" }}
+                                        onError={(e) => {e.target.onerror = null; e.target.src='https://via.placeholder.com/150?text=H';}} 
+                                    />
+                                ) : <div className="w-full h-full bg-gray-300"></div>}
+                            </div>
+
+                            {/* Name & Roles */}
+                            <h1 className="text-3xl font-bold serif mb-1">{profile.name}</h1>
+                            <p className="text-sm text-gray-500 mb-6 font-light tracking-wide">{profile.engName}</p>
+                            
+                            <div className="flex flex-wrap gap-2 mb-8">
+                                {profile.roles.map(role => (
+                                    <span key={role} className="text-xs font-bold bg-black text-white px-2 py-1 rounded-sm uppercase">{role}</span>
+                                ))}
+                            </div>
+
+                            {/* Slogan */}
+                            <div className="mb-10">
+                                <p className="serif italic text-lg leading-relaxed text-gray-700">
+                                    "{profile.slogan}"
+                                </p>
+                            </div>
+
+                            {/* Navigation (Desktop) */}
+                            <nav className="hidden lg:flex flex-col space-y-3 text-sm font-medium text-gray-500">
+                                <a onClick={() => document.getElementById('narrative').scrollIntoView({behavior: 'smooth'})} className="nav-item hover:text-black w-fit">황치웅의 서사</a>
+                                <a onClick={() => document.getElementById('works').scrollIntoView({behavior: 'smooth'})} className="nav-item hover:text-black w-fit">포트폴리오</a>
+                                <a onClick={() => document.getElementById('messenger').scrollIntoView({behavior: 'smooth'})} className="nav-item hover:text-black w-fit">Messenger</a>
+                                <a onClick={() => document.getElementById('gallery').scrollIntoView({behavior: 'smooth'})} className="nav-item hover:text-black w-fit">기록 (Gallery)</a>
+                            </nav>
+                        </div>
+
+                        {/* Contact Footer */}
+                        <div className="mt-10 lg:mt-0 pt-6 border-t border-gray-300">
+                            <p className="text-xs font-bold text-gray-400 uppercase mb-2">Contact</p>
+                            <a href={`mailto:${profile.email}`} className="flex items-center gap-2 text-sm text-gray-800 hover:underline">
+                                <Icon name="mail" /> {profile.email}
+                            </a>
+                        </div>
+                    </aside>
+
+                    {/* Right Content Area */}
+                    <main className="flex-1 p-6 lg:p-20 max-w-4xl">
+                        
+                        {/* Mobile Nav (Visible only on mobile) */}
+                        <nav className="lg:hidden flex gap-6 text-sm font-bold text-gray-400 mb-10 border-b pb-4 overflow-x-auto">
+                            <a onClick={() => document.getElementById('narrative').scrollIntoView({behavior: 'smooth'})} className="whitespace-nowrap text-black">서사</a>
+                            <a onClick={() => document.getElementById('works').scrollIntoView({behavior: 'smooth'})} className="whitespace-nowrap">포트폴리오</a>
+                            <a onClick={() => document.getElementById('messenger').scrollIntoView({behavior: 'smooth'})} className="whitespace-nowrap">Messenger</a>
+                        </nav>
+
+                        {/* Narrative Section */}
+                        <section id="narrative" className="mb-24 fade-in">
+                            <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-10">Narrative</h2>
+                            
+                            <div className="space-y-16">
+                                {narratives.map((item, idx) => (
+                                    <div key={idx} className="group">
+                                        <h3 className="text-2xl md:text-3xl font-bold serif mb-4 group-hover:text-blue-800 transition-colors">
+                                            {item.title}
+                                        </h3>
+                                        <p className="text-gray-600 text-lg leading-loose whitespace-pre-line">
+                                            {item.content}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+
+                        <hr className="border-gray-100 my-20" />
+
+                        {/* Portfolio List Section */}
+                        <section id="works" className="mb-20">
+                            <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-10">Selected Works</h2>
+                            
+                            <div className="grid grid-cols-1 gap-8">
+                                {works.map((work, idx) => (
+                                    <div 
+                                        key={idx} 
+                                        onClick={work.action}
+                                        className={`border-b border-gray-100 pb-8 ${work.action ? 'cursor-pointer' : ''}`}
+                                    >
+                                        <div className="flex items-center gap-3 mb-2 text-xs font-mono text-gray-400">
+                                            <span>{work.year}</span>
+                                            <span>/</span>
+                                            <span className="uppercase text-blue-600 font-bold">{work.category}</span>
+                                        </div>
+                                        {work.action ? (
+                                            <h3 className="text-xl font-bold serif hover:text-blue-700 transition-colors inline-flex items-center gap-2">
+                                                {work.title} <Icon name="users" className="text-blue-500" />
+                                            </h3>
+                                        ) : (
+                                            <a href={work.url} target="_blank" rel="noopener noreferrer" className="block group">
+                                                <h3 className="text-xl font-bold serif group-hover:text-blue-700 transition-colors inline-flex items-center gap-2">
+                                                    {work.title} <Icon name="external" className="opacity-30 group-hover:opacity-100 transition-opacity" />
+                                                </h3>
+                                            </a>
+                                        )}
+                                        <p className="text-gray-500 mt-2">{work.subtitle}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* Messenger Section (Magazine.kim) */}
+                        <section id="messenger" className="mb-24">
+                            <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-10">Messenger</h2>
+                            <div className="bg-gray-50 p-8 rounded-lg border border-gray-100">
+                                <div className="flex items-center gap-2 mb-6">
+                                    <span className="font-bold text-lg serif">Magazine.kim Series</span>
+                                </div>
+                                <div className="space-y-4">
+                                    {messengerArticles.map((article, idx) => (
+                                        <a key={idx} href={article.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-4 bg-white rounded border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all group">
+                                            <div className="flex items-center gap-3">
+                                                <Icon name="fileText" className="text-gray-400 group-hover:text-blue-500" />
+                                                <span className="text-gray-700 font-medium group-hover:text-black">{article.title}</span>
+                                            </div>
+                                            <Icon name="external" size={16} className="text-gray-300 group-hover:text-blue-500" />
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                        </section>
+
+                         {/* Gallery Section */}
+                         <section id="gallery" className="mb-20">
+                            <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-10">On the Scene</h2>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                {galleryImages.map((img, idx) => (
+                                    <div key={idx} className="relative aspect-square bg-gray-100 overflow-hidden group cursor-pointer">
+                                        <img src={img.src} alt={img.caption} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                                            onError={(e) => {e.target.onerror = null; e.target.src='https://via.placeholder.com/300?text=Photo';}} />
+                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors flex items-end p-4">
+                                            <p className="text-white text-xs font-bold opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all">
+                                                {img.caption}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+
+                        <footer className="text-center text-xs text-gray-300 py-10">
+                            © 2025 Hwang Chi Woong. Inspired by chajonggwan.me
+                        </footer>
+                    </main>
+
+                    {/* Modal for Academy */}
                     {isModalOpen && (
-                        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 modal-overlay">
-                            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsModalOpen(false)}></div>
-                            <div className="bg-white w-full max-w-2xl rounded-xl shadow-2xl z-10 overflow-hidden modal-content relative max-h-[90vh] overflow-y-auto">
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay">
+                            <div className="absolute inset-0 bg-white/90 backdrop-blur-sm" onClick={() => setIsModalOpen(false)}></div>
+                            <div className="bg-white w-full max-w-lg border border-gray-200 shadow-2xl z-10 modal-content p-8 md:p-12 relative">
                                 <button 
                                     onClick={() => setIsModalOpen(false)}
                                     className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -215,225 +325,31 @@
                                     <Icon name="x" size={24} />
                                 </button>
                                 
-                                <div className="bg-[#1a1a1a] text-white p-8 md:p-10">
-                                    <div className="flex items-center gap-3 mb-4 text-blue-300">
-                                        <Icon name="users" size={24} />
-                                        <span className="font-bold tracking-wider text-sm uppercase">Special Project</span>
-                                    </div>
-                                    <h2 className="text-3xl md:text-4xl font-bold serif mb-2">{academyData.title}</h2>
-                                    <p className="text-gray-300 text-lg font-light">{academyData.subtitle}</p>
+                                <h2 className="text-3xl font-bold serif mb-2">{academyData.title}</h2>
+                                <p className="text-gray-500 mb-8">{academyData.subtitle}</p>
+
+                                <div className="prose prose-sm">
+                                    <h4 className="font-bold text-black uppercase text-xs tracking-widest mb-3">Background</h4>
+                                    <p className="text-gray-600 mb-8 leading-relaxed">
+                                        {academyData.reason}
+                                    </p>
+
+                                    <h4 className="font-bold text-black uppercase text-xs tracking-widest mb-3">Network & Instructors</h4>
+                                    <ul className="space-y-2">
+                                        {academyData.instructors.map((inst, idx) => (
+                                            <li key={idx} className="flex items-center gap-2 text-gray-700">
+                                                <span className="w-1.5 h-1.5 bg-blue-600 rounded-full"></span>
+                                                {inst}
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </div>
-
-                                <div className="p-8 md:p-10 space-y-8">
-                                    {/* Why */}
-                                    <div>
-                                        <h3 className="text-xl font-bold mb-3 serif border-l-4 border-blue-600 pl-3">왜 만들었는가?</h3>
-                                        <p className="text-gray-600 leading-relaxed text-lg">
-                                            {academyData.reason}
-                                        </p>
-                                    </div>
-
-                                    {/* Network */}
-                                    <div>
-                                        <h3 className="text-xl font-bold mb-4 serif border-l-4 border-black pl-3">참여 강사진 (Network)</h3>
-                                        <p className="text-sm text-gray-500 mb-4">직접 섭외하고 기획하여 초청한 전문가 그룹입니다.</p>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                            {academyData.instructors.map((inst, idx) => (
-                                                <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 rounded border border-gray-100 hover:border-gray-300 transition-colors">
-                                                    <span className="font-bold text-gray-900">{inst.name}</span>
-                                                    <span className="text-xs text-gray-500 font-medium text-right">{inst.role}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    <div className="pt-6 border-t border-gray-100 text-center">
-                                        <p className="text-sm text-gray-400">누적 수강생 1만 명 달성 (1기~8기)</p>
-                                    </div>
+                                <div className="mt-8 pt-6 border-t text-center">
+                                    <span className="text-xs font-bold bg-blue-100 text-blue-800 px-3 py-1 rounded-full">누적 수강생 1만 명 배출</span>
                                 </div>
                             </div>
                         </div>
                     )}
-
-                    {/* Top Navigation */}
-                    <nav className="fixed top-0 w-full bg-[#f8f9fa]/90 backdrop-blur-md z-50 border-b border-gray-200">
-                        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-                            <span className="font-bold text-lg tracking-tight serif">H.C.W.</span>
-                            <div className="flex gap-8 text-sm font-medium text-gray-500">
-                                <button onClick={() => document.getElementById('about').scrollIntoView({behavior: 'smooth'})} className="hover:text-black transition-colors">About</button>
-                                <button onClick={() => document.getElementById('series').scrollIntoView({behavior: 'smooth'})} className="hover:text-black transition-colors">Series</button>
-                                <button onClick={() => document.getElementById('works').scrollIntoView({behavior: 'smooth'})} className="hover:text-black transition-colors">Works</button>
-                                <button onClick={() => document.getElementById('gallery').scrollIntoView({behavior: 'smooth'})} className="hover:text-black transition-colors">Gallery</button>
-                            </div>
-                        </div>
-                    </nav>
-
-                    {/* Hero Section */}
-                    <header id="about" className="pt-32 pb-20 px-6 max-w-5xl mx-auto">
-                        <div className="fade-in-up flex flex-col md:flex-row items-center md:items-start gap-8">
-                            {/* Profile Image Section */}
-                            <div className="flex-shrink-0 w-32 h-32 md:w-48 md:h-48 bg-gray-200 rounded-full overflow-hidden border-4 border-white shadow-lg flex items-center justify-center relative group">
-                                {profile.imageUrl ? (
-                                    <img src={profile.imageUrl} alt="Profile" className="w-full h-full object-cover" onError={(e) => {e.target.onerror = null; e.target.src='https://via.placeholder.com/150?text=H.C.W';}} />
-                                ) : (
-                                    <span className="text-3xl font-bold text-white serif">H</span>
-                                )}
-                            </div>
-                            <div className="text-center md:text-left">
-                                <p className="text-sm font-bold tracking-widest text-gray-500 mb-4 uppercase">Journalist Portfolio</p>
-                                <h1 className="text-4xl md:text-6xl font-bold mb-4 serif leading-tight text-gray-900">
-                                    {profile.name}<span className="text-gray-400 font-light ml-4 hidden md:inline text-3xl">{profile.engName}</span>
-                                </h1>
-                                <p className="text-lg text-gray-600 mt-6 leading-relaxed max-w-2xl serif mx-auto md:mx-0">
-                                    {profile.bio}
-                                </p>
-                                <div className="mt-8 flex items-center justify-center md:justify-start gap-6">
-                                    <a href={`mailto:${profile.email}`} className="flex items-center gap-2 text-gray-900 font-medium border-b border-gray-900 pb-0.5 hover:opacity-70 transition-opacity">
-                                        <Icon name="mail" size={18} /> {profile.email}
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </header>
-
-                    <div className="border-t border-gray-200 max-w-5xl mx-auto"></div>
-
-                    {/* Competencies Section */}
-                    <section className="py-20 px-6 max-w-5xl mx-auto bg-white my-10 rounded-sm shadow-sm">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                            {competencies.map((item, i) => (
-                                <div key={i} className="fade-in-up delay-100 space-y-3">
-                                    <div className="w-10 h-1 bg-black mb-4"></div>
-                                    <h3 className="text-xl font-bold serif">{item.title}</h3>
-                                    <p className="font-bold text-gray-500 text-sm uppercase tracking-wider">{item.desc}</p>
-                                    <p className="text-gray-600 leading-relaxed pt-2 text-sm">
-                                        {item.text}
-                                    </p>
-                                    {item.source && <p className="text-xs text-gray-400 mt-1">- {item.source}</p>}
-                                </div>
-                            ))}
-                        </div>
-                    </section>
-
-                    {/* Magazine.kim Series Section */}
-                    <section id="series" className="py-20 px-6 max-w-5xl mx-auto bg-gray-50 rounded-xl mb-20">
-                        <div className="flex items-center gap-3 mb-10">
-                            <div className="w-1 h-8 bg-blue-600"></div>
-                            <h2 className="text-3xl font-bold serif">황치웅의 메신저</h2>
-                            <span className="text-sm text-gray-500 font-medium px-3 py-1 bg-white rounded-full border border-gray-200">Magazine.kim</span>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {magazineSeries.map((item, index) => (
-                                <a key={index} href={item.link} target="_blank" rel="noopener noreferrer" className="group bg-white p-6 rounded-lg border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all block">
-                                    <span className="text-xs font-bold text-blue-600 mb-2 block">{item.date} Series</span>
-                                    <h3 className="text-xl font-bold mb-3 group-hover:text-blue-700 transition-colors serif">{item.title}</h3>
-                                    <p className="text-sm text-gray-600 leading-relaxed">{item.desc}</p>
-                                    <div className="mt-4 flex items-center text-xs font-bold text-gray-400 group-hover:text-blue-500">
-                                        READ MORE &rarr;
-                                    </div>
-                                </a>
-                            ))}
-                        </div>
-                    </section>
-
-                    {/* Featured Works Section */}
-                    <section id="works" className="py-20 px-6 max-w-5xl mx-auto">
-                        <div className="flex items-baseline justify-between mb-12">
-                            <h2 className="text-3xl md:text-4xl font-bold serif">Selected Works</h2>
-                            <span className="text-gray-400 text-sm">Report & Activity</span>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 gap-0 border-t border-gray-300">
-                            {works.map((work, index) => (
-                                <article 
-                                    key={index} 
-                                    onClick={work.action ? work.action : undefined}
-                                    className={`group py-10 border-b border-gray-200 grid grid-cols-1 md:grid-cols-12 gap-6 transition-colors px-4 -mx-4 rounded-lg ${work.action ? 'cursor-pointer hover:bg-blue-50/50' : 'hover:bg-white'}`}
-                                >
-                                    <div className="md:col-span-3 text-gray-500 font-mono text-sm pt-1">
-                                        {work.year} <span className="mx-2">/</span> {work.category}
-                                    </div>
-                                    <div className="md:col-span-9">
-                                        {work.action ? (
-                                            <div className="group-hover:text-blue-700 transition-colors block">
-                                                <h3 className="text-2xl font-bold mb-3 serif flex items-center gap-2">
-                                                    {work.title}
-                                                    <Icon name="users" size={18} className="text-blue-500 animate-pulse" />
-                                                </h3>
-                                            </div>
-                                        ) : (
-                                            <a href={work.url} target="_blank" rel="noopener noreferrer" className="group-hover:text-blue-700 transition-colors block">
-                                                <h3 className="text-2xl font-bold mb-3 serif flex items-center gap-2">
-                                                    {work.title}
-                                                    <Icon name="external" size={18} className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-500" />
-                                                </h3>
-                                            </a>
-                                        )}
-                                        
-                                        <p className="text-gray-600 leading-relaxed mb-4">
-                                            {work.summary}
-                                        </p>
-                                        <div className="flex gap-2 flex-wrap">
-                                            {work.tags.map(tag => (
-                                                <span key={tag} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded border border-gray-200">#{tag}</span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </article>
-                            ))}
-                        </div>
-                    </section>
-
-                    {/* Gallery Section */}
-                    <section id="gallery" className="py-20 px-6 max-w-5xl mx-auto">
-                        <div className="flex items-center gap-3 mb-10">
-                            <Icon name="camera" size={24} className="text-gray-900" />
-                            <h2 className="text-3xl font-bold serif">On the Scene</h2>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {galleryImages.map((img, index) => (
-                                <div key={index} className="gallery-item relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-100 cursor-pointer group">
-                                    <img src={img.src} alt={img.caption} className="gallery-img w-full h-full object-cover opacity-90 group-hover:opacity-100" 
-                                         onError={(e) => {e.target.onerror = null; e.target.src='https://via.placeholder.com/400x300?text=Image+Not+Found';}} />
-                                    <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 to-transparent p-4 translate-y-full group-hover:translate-y-0 transition-transform">
-                                        <p className="text-white text-xs font-medium">{img.caption}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
-
-                    {/* Press Section */}
-                    <section className="py-20 px-6 max-w-5xl mx-auto bg-[#1a1a1a] text-white rounded-lg mb-20">
-                        <h2 className="text-3xl font-bold mb-10 serif border-b border-gray-700 pb-4">In the Media</h2>
-                        <div className="space-y-6">
-                            {press.map((item, index) => (
-                                <a key={index} href={item.url} target="_blank" rel="noopener noreferrer" className="block group p-6 bg-white/5 rounded border border-white/10 hover:bg-white/10 transition-colors cursor-pointer">
-                                    <div className="flex items-start gap-4">
-                                        <Icon name="quote" size={24} className="text-gray-500 mt-1 shrink-0" />
-                                        <div>
-                                            <h4 className="text-lg font-bold leading-snug mb-2 group-hover:text-blue-300 transition-colors flex items-center gap-2">
-                                                {item.title}
-                                                <Icon name="external" size={14} className="opacity-50" />
-                                            </h4>
-                                            <div className="text-sm text-gray-400 flex items-center gap-2 mb-2">
-                                                <span className="font-semibold text-gray-300">{item.outlet}</span>
-                                                <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
-                                                <span>Interview</span>
-                                            </div>
-                                            <p className="text-sm text-gray-500">{item.desc}</p>
-                                        </div>
-                                    </div>
-                                </a>
-                            ))}
-                        </div>
-                    </section>
-
-                    {/* Footer */}
-                    <footer className="py-10 text-center text-gray-500 text-sm border-t border-gray-200">
-                        <p>&copy; 2025 {profile.engName}. All rights reserved.</p>
-                        <p className="mt-2 opacity-60">Journalist Portfolio</p>
-                    </footer>
                 </div>
             );
         };
